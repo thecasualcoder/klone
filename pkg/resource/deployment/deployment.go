@@ -10,6 +10,11 @@ import (
 	"k8s.io/client-go/rest"
 )
 
+func clean(deployment *appsv1.Deployment) *appsv1.Deployment {
+	deployment.ObjectMeta.ResourceVersion = ""
+	return deployment
+}
+
 // Get returns K8s Deployment by name
 func Get(name, namespace string, config *rest.Config) (*appsv1.Deployment, error) {
 	clientset, err := kubernetes.NewForConfig(config)
@@ -23,11 +28,6 @@ func Get(name, namespace string, config *rest.Config) (*appsv1.Deployment, error
 	}
 
 	return deployment, nil
-}
-
-func clean(deployment *appsv1.Deployment) *appsv1.Deployment {
-	deployment.ObjectMeta.ResourceVersion = ""
-	return deployment
 }
 
 // Create creates a K8s Deployment
