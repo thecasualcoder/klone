@@ -1,0 +1,9 @@
+# output
+out/
+
+# OS X
+.DS_Store
+
+# Vim
+*.swp
+
