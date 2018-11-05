@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/thecasualcoder/klone/pkg/kubeconfig"
 	"github.com/thecasualcoder/klone/pkg/resource/deployment"
+	"github.com/thecasualcoder/klone/pkg/resource/secrets"
 	"github.com/thecasualcoder/klone/pkg/resource/service"
 )
 
@@ -70,6 +71,20 @@ var rootCmd = &cobra.Command{
 			}
 
 			fmt.Println("Service cloned successfully")
+		} else if kind == "secret" {
+			s, err := secrets.Get(name, namespace, fromClusterConfig)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			_, err = secrets.Create(s, namespace, toClusterConfig)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			fmt.Println("Secret cloned successfully")
 		}
 	},
 }
