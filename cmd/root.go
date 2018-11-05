@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/thecasualcoder/klone/pkg/kubeconfig"
 	"github.com/thecasualcoder/klone/pkg/resource/deployment"
+	"github.com/thecasualcoder/klone/pkg/resource/service"
 )
 
 var cfgFile string
@@ -26,7 +27,7 @@ var rootCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		kindAndName := strings.Split(args[0], "/")
-		// kind := kindAndName[0]
+		kind := kindAndName[0]
 		name := kindAndName[1]
 
 		fromClusterConfig, err := kubeconfig.ConfigFor(fromCluster, kubeCfgFile)
@@ -41,19 +42,35 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		d, err := deployment.Get(name, namespace, fromClusterConfig)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
+		if kind == "deploy" || kind == "deployment" {
+			d, err := deployment.Get(name, namespace, fromClusterConfig)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 
-		_, err = deployment.Create(d, namespace, toClusterConfig)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
+			_, err = deployment.Create(d, namespace, toClusterConfig)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 
-		fmt.Println("Deployment cloned successfully")
+			fmt.Println("Deployment cloned successfully")
+		} else if kind == "svc" || kind == "service" {
+			s, err := service.Get(name, namespace, fromClusterConfig)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			_, err = service.Create(s, namespace, toClusterConfig)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			fmt.Println("Service cloned successfully")
+		}
 	},
 }
 
