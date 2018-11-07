@@ -10,9 +10,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/thecasualcoder/klone/pkg/kubeconfig"
-	"github.com/thecasualcoder/klone/pkg/resource/deployment"
-	"github.com/thecasualcoder/klone/pkg/resource/secrets"
-	"github.com/thecasualcoder/klone/pkg/resource/service"
+	"github.com/thecasualcoder/klone/pkg/resources/deployments"
+	"github.com/thecasualcoder/klone/pkg/resources/secrets"
+	"github.com/thecasualcoder/klone/pkg/resources/services"
 )
 
 var cfgFile string
@@ -44,13 +44,13 @@ var rootCmd = &cobra.Command{
 		}
 
 		if kind == "deploy" || kind == "deployment" {
-			d, err := deployment.Get(name, namespace, fromClusterConfig)
+			d, err := deployments.Get(name, namespace, fromClusterConfig)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			_, err = deployment.Create(d, namespace, toClusterConfig)
+			_, err = deployments.Create(d, namespace, toClusterConfig)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
@@ -58,13 +58,13 @@ var rootCmd = &cobra.Command{
 
 			fmt.Println("Deployment cloned successfully")
 		} else if kind == "svc" || kind == "service" {
-			s, err := service.Get(name, namespace, fromClusterConfig)
+			s, err := services.Get(name, namespace, fromClusterConfig)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			_, err = service.Create(s, namespace, toClusterConfig)
+			_, err = services.Create(s, namespace, toClusterConfig)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
